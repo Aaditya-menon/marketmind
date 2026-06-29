@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketMind Financial Dashboard</title>
+    <!-- Premium Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-secondary: #131b2e;
+            --bg-card: rgba(30, 41, 59, 0.4);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-yellow: #f59e0b;
+            --accent-blue: #3b82f6;
+            --font-main: 'Outfit', sans-serif;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+                              radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.03) 0%, transparent 40%);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background-color: rgba(19, 27, 46, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            50% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 14px var(--accent-green); }
+            100% { transform: scale(0.9); opacity: 0.6; }
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, #f8fafc 30%, #3b82f6 90%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .settings-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .settings-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+            transition: var(--transition-smooth);
+        }
+
+        .settings-btn:hover {
+            color: var(--text-primary);
+            transform: rotate(45deg);
+        }
+
+        .settings-panel {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 2rem;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            padding: 1rem;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            width: 280px;
+        }
+
+        .settings-panel.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 0.75rem;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            background-color: rgba(30, 41, 59, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            font-size: 0.875rem;
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .search-section {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .search-section h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .search-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 0.75rem;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+        }
+
+        .search-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            font-size: 1rem;
+        }
+
+        .search-bar input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        .search-bar button {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #1e40af 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 2rem;
+            font-family: var(--font-main);
+            font-weight: 600;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .search-bar button:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Loading Spinner */
+        .loading-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin: 2rem 0;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Dashboard Results Grid */
+        .dashboard-grid {
+            display: none;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+            width: 100%;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.2);
+            transition: var(--transition-smooth);
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Card spans */
+        .col-12 { grid-column: span 12; }
+        .col-8 { grid-column: span 8; }
+        .col-4 { grid-column: span 4; }
+
+        @media (max-width: 900px) {
+            .col-8, .col-4 { grid-column: span 12; }
+        }
+
+        /* Metric Values */
+        .metric-large {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Progress Bars */
+        .progress-bar-container {
+            background-color: rgba(255, 255, 255, 0.05);
+            height: 12px;
+            border-radius: 9999px;
+            width: 100%;
+            margin: 1rem 0;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sentiment-bar {
+            background: linear-gradient(90deg, var(--accent-red) 0%, var(--accent-yellow) 50%, var(--accent-green) 100%);
+        }
+
+        .progress-indicator {
+            position: absolute;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--text-primary);
+            box-shadow: 0 0 6px white;
+            transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.85rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-green { background-color: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.25); }
+        .badge-red { background-color: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.25); }
+        .badge-yellow { background-color: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); border: 1px solid rgba(245, 158, 11, 0.25); }
+        .badge-grey { background-color: rgba(148, 163, 184, 0.15); color: var(--text-secondary); border: 1px solid rgba(148, 163, 184, 0.25); }
+
+        /* Lists */
+        ul.styled-list {
+            list-style: none;
+        }
+
+        ul.styled-list li {
+            position: relative;
+            padding-left: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        ul.styled-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent-blue);
+            font-weight: bold;
+            font-size: 1.25rem;
+            top: -2px;
+        }
+
+        /* Risk assessment synthesis box */
+        .thesis-box {
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-top: 1rem;
+        }
+
+        /* Verification Gate / HITL Interruption Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: var(--transition-smooth);
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-content {
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .modal-metric-row {
+            display: flex;
+            justify-content: space-between;
+            background-color: rgba(255, 255, 255, 0.03);
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-confirm {
+            flex: 1;
+            background-color: var(--accent-green);
+            border: none;
+            color: var(--bg-primary);
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-main);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-confirm:hover {
+            opacity: 0.9;
+        }
+
+        .btn-reject {
+            flex: 1;
+            background-color: transparent;
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-main);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-reject:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <div class="logo-dot"></div>
+            <div class="logo-text">MarketMind</div>
+        </div>
+        <div class="settings-container">
+            <button class="settings-btn" id="settings-toggle">⚙️</button>
+            <div class="settings-panel" id="settings-panel">
+                <div class="input-group">
+                    <label class="input-label">ADK API Endpoint URL</label>
+                    <input type="text" class="input-field" id="setting-api-url" value="http://127.0.0.1:8080">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <div class="search-section">
+            <h1>Asset Sentiment & Technical Intelligence</h1>
+            <p>Runs parallel Python analytics and synthesizes trade thesis using Gemini 2.5 Flash</p>
+            <div class="search-bar">
+                <input type="text" id="ticker-input" placeholder="Enter ticker e.g. BTC, ETH, AAPL" autofocus>
+                <button id="analyze-btn">Analyze 📈</button>
+            </div>
+        </div>
+
+        <!-- Loading View -->
+        <div class="loading-container" id="loading-container">
+            <div class="spinner"></div>
+            <div class="loading-text" id="loading-text">Starting analysis session...</div>
+        </div>
+
+        <!-- Results View -->
+        <div class="dashboard-grid" id="results-dashboard">
+            
+            <!-- Overall Summary Card -->
+            <div class="card col-4">
+                <div class="card-header">
+                    <div class="card-title">Recommendation</div>
+                    <span class="badge" id="rec-action-badge">HOLD</span>
+                </div>
+                <div class="metric-large" id="rec-confidence">50%</div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem;">Model Confidence Score</div>
+                
+                <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <span style="color: var(--text-secondary);">Asset Ticker</span>
+                        <strong id="res-ticker-symbol">-</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <span style="color: var(--text-secondary);">Risk Profile</span>
+                        <span class="badge" id="rec-risk-badge">MEDIUM</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trade Thesis Card -->
+            <div class="card col-8">
+                <div class="card-header">
+                    <div class="card-title">Investment Thesis</div>
+                </div>
+                <div class="thesis-box" id="res-thesis">
+                    Awaiting asset analysis...
+                </div>
+            </div>
+
+            <!-- Sentiment Analysis Card -->
+            <div class="card col-6">
+                <div class="card-header">
+                    <div class="card-title">News Sentiment</div>
+                    <span class="badge badge-grey" id="sent-value-badge">0.00</span>
+                </div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem;">Net score based on keyword-based scoring:</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill sentiment-bar"></div>
+                    <div class="progress-indicator" id="sentiment-indicator" style="left: 50%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+                    <span>Negative (-1.0)</span>
+                    <span>Neutral (0.0)</span>
+                    <span>Positive (1.0)</span>
+                </div>
+                
+                <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem; font-weight: 600;">Key Themes Extracted</h4>
+                <ul class="styled-list" id="sent-themes-list">
+                    <li>Awaiting news articles...</li>
+                </ul>
+            </div>
+
+            <!-- Technical Summary Card -->
+            <div class="card col-6">
+                <div class="card-header">
+                    <div class="card-title">Technical Chart Analytics</div>
+                    <span class="badge badge-grey" id="tech-trend-badge">Neutral</span>
+                </div>
+                
+                <div style="margin-bottom: 1.25rem;">
+                    <h4 style="font-size: 0.95rem; margin-bottom: 0.35rem; font-weight: 600;">Indicator Signal</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;" id="tech-signal">-</p>
+                </div>
+                
+                <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem; font-weight: 600;">Key Support / Resistance Levels</h4>
+                <ul class="styled-list" id="tech-levels-list">
+                    <li>Awaiting chart data...</li>
+                </ul>
+            </div>
+
+            <!-- Notable Events Card -->
+            <div class="card col-12">
+                <div class="card-header">
+                    <div class="card-title">Parsed Notable Corporate & Market Events</div>
+                </div>
+                <ul class="styled-list" id="notable-events-list">
+                    <li>Awaiting events...</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Verification Gate Modal -->
+    <div class="modal-overlay" id="verification-modal">
+        <div class="modal">
+            <div class="modal-title">🚦 MarketMind Verification Gate</div>
+            <div class="modal-content">
+                A parallel analysis has finished extracting sentiment and technical trends. Verify the metrics below before proceeding with the Gemini-powered investment risk assessment.
+            </div>
+            
+            <div class="modal-metric-row">
+                <span>Sentiment Score:</span>
+                <strong id="modal-sentiment-score">0.00</strong>
+            </div>
+            <div class="modal-metric-row">
+                <span>Technical Trend:</span>
+                <strong id="modal-technical-trend">Neutral</strong>
+            </div>
+            <div class="modal-metric-row">
+                <span>Technical Signal:</span>
+                <strong id="modal-technical-signal">-</strong>
+            </div>
+
+            <div class="modal-content" style="margin-top: 1rem; font-weight: 500; color: var(--text-primary);">
+                Proceed with full risk assessment?
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-confirm" id="btn-modal-yes">Yes, Proceed</button>
+                <button class="btn-reject" id="btn-modal-no">No, Stop</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Settings Panel
+        const settingsToggle = document.getElementById('settings-toggle');
+        const settingsPanel = document.getElementById('settings-panel');
+        settingsToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsPanel.classList.toggle('active');
+        });
+        document.addEventListener('click', () => {
+            settingsPanel.classList.remove('active');
+        });
+        settingsPanel.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // App Logic
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const tickerInput = document.getElementById('ticker-input');
+        const loadingContainer = document.getElementById('loading-container');
+        const loadingText = document.getElementById('loading-text');
+        const dashboard = document.getElementById('results-dashboard');
+        const verificationModal = document.getElementById('verification-modal');
+
+        // State Delta Variables
+        let newsSentimentResult = null;
+        let technicalAnalysisResult = null;
+        let riskAssessmentResult = null;
+        let currentSessionId = null;
+        let currentInterruptId = null;
+
+        // Auto-detect backend port (check if running on 8080/8000, fallback to 8080)
+        let defaultUrl = 'http://127.0.0.1:8080';
+        if (window.location.port) {
+            defaultUrl = 'http://' + window.location.hostname + ':' + window.location.port;
+        }
+        document.getElementById('setting-api-url').value = defaultUrl;
+
+        function getApiUrl() {
+            return document.getElementById('setting-api-url').value.trim();
+        }
+
+        analyzeBtn.addEventListener('click', startAnalysis);
+        tickerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') startAnalysis();
+        });
+
+        async function startAnalysis() {
+            const ticker = tickerInput.value.trim().toUpperCase();
+            if (!ticker) {
+                alert('Please enter a valid ticker symbol.');
+                return;
+            }
+
+            // Reset UI
+            dashboard.style.display = 'none';
+            loadingContainer.style.display = 'flex';
+            loadingText.textContent = `Initializing analysis session for ${ticker}...`;
+
+            newsSentimentResult = null;
+            technicalAnalysisResult = null;
+            riskAssessmentResult = null;
+            currentSessionId = null;
+            currentInterruptId = null;
+
+            const API_BASE = getApiUrl();
+            const userId = 'user';
+            // Generate a random session ID
+            currentSessionId = 'session_' + Math.random().toString(36).substring(2, 15);
+
+            try {
+                // 1. Create a session on the ADK server
+                loadingText.textContent = `Creating connection channel on port ${API_BASE.split(':').pop()}...`;
+                const sessionRes = await fetch(`${API_BASE}/apps/marketmind/users/${userId}/sessions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ session_id: currentSessionId })
+                });
+
+                if (!sessionRes.ok) {
+                    throw new Error(`Failed to create session: ${sessionRes.statusText}`);
+                }
+
+                // 2. Start the SSE flow
+                loadingText.textContent = `Fetching market indicators and news for ${ticker}...`;
+                await runAgentSse(ticker, null);
+
+            } catch (err) {
+                loadingContainer.style.display = 'none';
+                alert(`Error connecting to ADK Server: ${err.message}\nMake sure your ADK web playground is running.`);
+                console.error(err);
+            }
+        }
+
+        async function runAgentSse(ticker, functionResponse) {
+            const API_BASE = getApiUrl();
+            const userId = 'user';
+            
+            // Build RunAgentRequest payload
+            let payload = {
+                app_name: 'marketmind',
+                user_id: userId,
+                session_id: currentSessionId,
+                streaming: true
+            };
+
+            if (functionResponse) {
+                payload.new_message = {
+                    role: 'user',
+                    parts: [{ function_response: functionResponse }]
+                };
+            } else {
+                payload.new_message = {
+                    role: 'user',
+                    parts: [{ text: ticker }]
+                };
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/run_sse`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`SSE request failed: ${response.statusText}`);
+                }
+
+                // Read the Stream
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder('utf-8');
+                let buffer = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop(); // keep partial line in buffer
+
+                    for (const line of lines) {
+                        const cleanedLine = line.trim();
+                        if (cleanedLine.startsWith('data:')) {
+                            const jsonStr = cleanedLine.substring(5).trim();
+                            if (!jsonStr) continue;
+
+                            try {
+                                const event = JSON.parse(jsonStr);
+                                handleAgentEvent(event, ticker);
+                            } catch (e) {
+                                console.error('Failed to parse SSE JSON line:', jsonStr, e);
+                            }
+                        }
+                    }
+                }
+
+            } catch (err) {
+                loadingContainer.style.display = 'none';
+                alert(`Analysis interrupted: ${err.message}`);
+                console.error(err);
+            }
+        }
+
+        function handleAgentEvent(event, ticker) {
+            console.log('Received Event:', event);
+
+            // Parse state delta changes
+            if (event.actions && event.actions.state_delta) {
+                const delta = event.actions.state_delta;
+                if (delta.news_sentiment_result) {
+                    newsSentimentResult = delta.news_sentiment_result;
+                    updateSentimentUI();
+                }
+                if (delta.technical_analysis_result) {
+                    technicalAnalysisResult = delta.technical_analysis_result;
+                    updateTechnicalUI();
+                }
+                if (delta.risk_assessment_result) {
+                    riskAssessmentResult = delta.risk_assessment_result;
+                    updateRiskUI();
+                }
+            }
+
+            // Track state if included directly in event.state
+            if (event.state) {
+                if (event.state.news_sentiment_result) {
+                    newsSentimentResult = event.state.news_sentiment_result;
+                    updateSentimentUI();
+                }
+                if (event.state.technical_analysis_result) {
+                    technicalAnalysisResult = event.state.technical_analysis_result;
+                    updateTechnicalUI();
+                }
+                if (event.state.risk_assessment_result) {
+                    riskAssessmentResult = event.state.risk_assessment_result;
+                    updateRiskUI();
+                }
+            }
+
+            // Check for HITL pause (RequestInput function call)
+            if (event.content && event.content.parts) {
+                for (const part of event.content.parts) {
+                    if (part.function_call && part.function_call.name === 'adk_request_input') {
+                        currentInterruptId = part.function_call.id;
+                        showVerificationGate(part.function_call.args.message);
+                    }
+                }
+            }
+        }
+
+        // Update News Sentiment UI Card
+        function updateSentimentUI() {
+            if (!newsSentimentResult) return;
+            
+            const score = newsSentimentResult.sentiment_score;
+            document.getElementById('sent-value-badge').textContent = score.toFixed(2);
+            
+            // Convert score from range [-1, 1] to percent [0, 100] for progress indicator
+            const percent = ((score + 1) / 2) * 100;
+            document.getElementById('sentiment-indicator').style.left = `${percent}%`;
+
+            // Style badge color based on score
+            const badge = document.getElementById('sent-value-badge');
+            badge.className = 'badge';
+            if (score > 0.15) badge.classList.add('badge-green');
+            else if (score < -0.15) badge.classList.add('badge-red');
+            else badge.classList.add('badge-grey');
+
+            // Set Themes
+            const themesList = document.getElementById('sent-themes-list');
+            themesList.innerHTML = '';
+            (newsSentimentResult.key_themes || []).forEach(theme => {
+                const li = document.createElement('li');
+                li.textContent = theme;
+                themesList.appendChild(li);
+            });
+        }
+
+        // Update Technical Chart UI Card
+        function updateTechnicalUI() {
+            if (!technicalAnalysisResult) return;
+
+            const trend = technicalAnalysisResult.trend_direction;
+            const trendBadge = document.getElementById('tech-trend-badge');
+            trendBadge.textContent = trend;
+            trendBadge.className = 'badge';
+            if (trend === 'Bullish') trendBadge.classList.add('badge-green');
+            else if (trend === 'Bearish') trendBadge.classList.add('badge-red');
+            else trendBadge.classList.add('badge-grey');
+
+            document.getElementById('tech-signal').textContent = technicalAnalysisResult.momentum_signal || '-';
+
+            // Key support/resistance levels
+            const levelsList = document.getElementById('tech-levels-list');
+            levelsList.innerHTML = '';
+            const levels = technicalAnalysisResult.key_levels || [];
+            if (levels.length > 0) {
+                const liSupport = document.createElement('li');
+                liSupport.innerHTML = `Support level identified at: <strong>${levels[0]}</strong>`;
+                levelsList.appendChild(liSupport);
+                
+                if (levels[1]) {
+                    const liResistance = document.createElement('li');
+                    liResistance.innerHTML = `Resistance level identified at: <strong>${levels[1]}</strong>`;
+                    levelsList.appendChild(liResistance);
+                }
+            } else {
+                levelsList.innerHTML = '<li>No support/resistance levels found</li>';
+            }
+        }
+
+        // Update Risk Assessment & Final Thesis Card
+        function updateRiskUI() {
+            if (!riskAssessmentResult) return;
+
+            document.getElementById('res-thesis').textContent = riskAssessmentResult.thesis || '';
+            document.getElementById('rec-confidence').textContent = `${riskAssessmentResult.confidence_score || 0}%`;
+
+            const action = riskAssessmentResult.suggested_action;
+            const actionBadge = document.getElementById('rec-action-badge');
+            actionBadge.textContent = action;
+            actionBadge.className = 'badge';
+            if (action === 'Buy') actionBadge.classList.add('badge-green');
+            else if (action === 'Sell') actionBadge.classList.add('badge-red');
+            else if (action === 'Avoid') actionBadge.classList.add('badge-red');
+            else actionBadge.classList.add('badge-grey');
+
+            const risk = riskAssessmentResult.risk_rating;
+            const riskBadge = document.getElementById('rec-risk-badge');
+            riskBadge.textContent = risk;
+            riskBadge.className = 'badge';
+            if (risk === 'Low') riskBadge.classList.add('badge-green');
+            else if (risk === 'High') riskBadge.classList.add('badge-red');
+            else riskBadge.classList.add('badge-yellow');
+        }
+
+        // Show Verification Modal (HITL Gate)
+        function showVerificationGate(message) {
+            loadingContainer.style.display = 'none';
+
+            // Populate metrics in modal dynamically from local results
+            document.getElementById('modal-sentiment-score').textContent = 
+                newsSentimentResult ? newsSentimentResult.sentiment_score.toFixed(2) : 'N/A';
+            
+            document.getElementById('modal-technical-trend').textContent = 
+                technicalAnalysisResult ? technicalAnalysisResult.trend_direction : 'N/A';
+            
+            document.getElementById('modal-technical-signal').textContent = 
+                technicalAnalysisResult ? (technicalAnalysisResult.momentum_signal || '-') : '-';
+
+            // Style trend label color
+            const trendLabel = document.getElementById('modal-technical-trend');
+            if (technicalAnalysisResult) {
+                trendLabel.style.color = 
+                    technicalAnalysisResult.trend_direction === 'Bullish' ? 'var(--accent-green)' :
+                    technicalAnalysisResult.trend_direction === 'Bearish' ? 'var(--accent-red)' : 'var(--text-secondary)';
+            }
+
+            verificationModal.classList.add('active');
+        }
+
+        // Setup Yes / No button handlers on HITL Modal
+        document.getElementById('btn-modal-yes').addEventListener('click', () => resumeWithChoice('yes'));
+        document.getElementById('btn-modal-no').addEventListener('click', () => resumeWithChoice('no'));
+
+        async function resumeWithChoice(choice) {
+            verificationModal.classList.remove('active');
+            
+            // Re-show Loading Spinner
+            loadingContainer.style.display = 'flex';
+            if (choice === 'yes') {
+                loadingText.textContent = `Verifying credentials and requesting LLM risk synthesis...`;
+            } else {
+                loadingText.textContent = `Stopping assessment... Generating partial report.`;
+            }
+
+            // Build function response payload matching the interrupt ID
+            const functionResponse = {
+                name: 'adk_request_input',
+                id: currentInterruptId,
+                response: { result: choice }
+            };
+
+            const ticker = tickerInput.value.trim().toUpperCase();
+            await runAgentSse(ticker, functionResponse);
+
+            // Once the stream completes, display the dashboard and hide loader
+            loadingContainer.style.display = 'none';
+            document.getElementById('res-ticker-symbol').textContent = ticker;
+            
+            // Set notable events list from news sentiment articles if available
+            const eventsList = document.getElementById('notable-events-list');
+            eventsList.innerHTML = '';
+            if (newsSentimentResult && newsSentimentResult.notable_events) {
+                newsSentimentResult.notable_events.forEach(ev => {
+                    const li = document.createElement('li');
+                    li.textContent = ev;
+                    eventsList.appendChild(li);
+                });
+            } else {
+                eventsList.innerHTML = '<li>No notable events parsed</li>';
+            }
+
+            dashboard.style.display = 'grid';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+WARNING: The --reload flag is not supported on Windows because it forces Uvicorn to use SelectorEventLoop, which does not support subprocesses (needed for executing tools). Forcing --no-reload.
+2026-06-28 17:42:46,107 - INFO - service_factory.py:265 - Using in-memory memory service
+2026-06-28 17:42:46,107 - INFO - local_storage.py:84 - Using per-agent session storage rooted at C:\Users\adity\Documents\antigravity
+2026-06-28 17:42:46,109 - INFO - local_storage.py:110 - Using file artifact service at C:\Users\adity\Documents\antigravity\.adk\artifacts
+C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\google\adk\cli\fast_api.py:528: UserWarning: [EXPERIMENTAL] InMemoryCredentialService: This feature is experimental and may change or be removed in future versions without notice. It may introduce breaking changes at any time.
+  credential_service = InMemoryCredentialService()
+C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\google\adk\auth\credential_service\in_memory_credential_service.py:33: UserWarning: [EXPERIMENTAL] BaseCredentialService: This feature is experimental and may change or be removed in future versions without notice. It may introduce breaking changes at any time.
+  super().__init__()
+2026-06-28 17:42:46,140 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\__init__.py
+2026-06-28 17:42:46,171 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\dataclasses.py
+2026-06-28 17:42:46,197 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\class_validators.py
+2026-06-28 17:42:46,214 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\errors.py
+2026-06-28 17:42:46,245 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\typing.py
+2026-06-28 17:42:46,267 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\utils.py
+2026-06-28 17:42:46,284 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\version.py
+2026-06-28 17:42:46,304 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\config.py
+2026-06-28 17:42:46,323 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\error_wrappers.py
+2026-06-28 17:42:46,344 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\json.py
+2026-06-28 17:42:46,365 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\color.py
+2026-06-28 17:42:46,389 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\networks.py
+2026-06-28 17:42:46,413 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\validators.py
+2026-06-28 17:42:46,434 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\datetime_parse.py
+2026-06-28 17:42:46,460 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\types.py
+2026-06-28 17:42:46,494 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\fields.py
+2026-06-28 17:42:46,525 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\main.py
+2026-06-28 17:42:46,537 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\parse.py
+2026-06-28 17:42:46,559 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\schema.py
+2026-06-28 17:42:46,577 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\annotated_types.py
+2026-06-28 17:42:46,595 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\decorator.py
+2026-06-28 17:42:46,612 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\env_settings.py
+2026-06-28 17:42:46,627 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\pydantic\v1\tools.py
+2026-06-28 17:42:46,681 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\uvicorn\loops\auto.py
+2026-06-28 17:42:46,694 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\uvicorn\loops\asyncio.py
+2026-06-28 17:42:46,728 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\uvicorn\protocols\http\auto.py
+2026-06-28 17:42:46,763 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py
+2026-06-28 17:42:46,796 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\uvicorn\protocols\http\flow_control.py
+2026-06-28 17:42:46,811 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\uvicorn\protocols\utils.py
+2026-06-28 17:42:46,837 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\uvicorn\protocols\websockets\auto.py
+2026-06-28 17:42:46,864 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_impl.py
+2026-06-28 17:42:46,883 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\websockets\legacy\__init__.py
+2026-06-28 17:42:46,920 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\websockets\legacy\handshake.py
+2026-06-28 17:42:46,960 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\websockets\legacy\server.py
+2026-06-28 17:42:46,979 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\websockets\legacy\exceptions.py
+2026-06-28 17:42:47,013 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\websockets\legacy\http.py
+2026-06-28 17:42:47,042 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\websockets\legacy\protocol.py
+2026-06-28 17:42:47,081 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\websockets\legacy\framing.py
+2026-06-28 17:42:47,104 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\websockets\server.py
+2026-06-28 17:42:47,138 - INFO - agent_change_handler.py:43 - Change detected in agents directory: C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\uvicorn\lifespan\on.py
+INFO:     Started server process [42848]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:18080 (Press CTRL+C to quit)
+INFO:     127.0.0.1:62007 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:62008 - "POST /apps/users/cli-user/sessions HTTP/1.1" 404 Not Found
+WARNING: The --reload flag is not supported on Windows because it forces Uvicorn to use SelectorEventLoop, which does not support subprocesses (needed for executing tools). Forcing --no-reload.
+2026-06-28 17:42:59,639 - INFO - service_factory.py:265 - Using in-memory memory service
+2026-06-28 17:42:59,640 - INFO - local_storage.py:84 - Using per-agent session storage rooted at C:\Users\adity\Documents\antigravity
+2026-06-28 17:42:59,640 - INFO - local_storage.py:110 - Using file artifact service at C:\Users\adity\Documents\antigravity\.adk\artifacts
+C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\google\adk\cli\fast_api.py:528: UserWarning: [EXPERIMENTAL] InMemoryCredentialService: This feature is experimental and may change or be removed in future versions without notice. It may introduce breaking changes at any time.
+  credential_service = InMemoryCredentialService()
+C:\Users\adity\Documents\antigravity\marketmind\.venv\Lib\site-packages\google\adk\auth\credential_service\in_memory_credential_service.py:33: UserWarning: [EXPERIMENTAL] BaseCredentialService: This feature is experimental and may change or be removed in future versions without notice. It may introduce breaking changes at any time.
+  super().__init__()
+INFO:     Started server process [44924]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:18080 (Press CTRL+C to quit)
+INFO:     127.0.0.1:62014 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:62017 - "POST /apps/users/cli-user/sessions HTTP/1.1" 404 Not Found
