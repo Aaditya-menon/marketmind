@@ -30,8 +30,12 @@ async def fetch_news(ticker: str) -> dict:
         
     try:
         url = "https://newsapi.org/v2/everything"
+        known_cryptos = {"BTC", "ETH", "SOL", "USDT", "USDC", "BNB", "XRP", "ADA", "DOGE", "LINK", "AVAX", "DOT", "MATIC", "SHIB", "LTC"}
+        query = f"{ticker} cryptocurrency" if ticker.upper() in known_cryptos else f"{ticker} (stock OR shares)"
         params = {
-            "q": ticker,
+            "q": query,
+            "language": "en",
+            "sortBy": "relevancy",
             "pageSize": 10,
             "apiKey": api_key
         }

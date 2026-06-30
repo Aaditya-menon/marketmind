@@ -70,16 +70,18 @@ class NewsSentimentAgent(BaseAgent):
 
         # Dynamically extract themes based on matches
         themes = []
-        if any(w in text_lower for w in ["earnings", "profit", "beat", "revenue"]):
-            themes.append("Earnings & Performance")
-        if any(w in text_lower for w in ["partnership", "strategic", "alliance"]):
-            themes.append("Strategic Partnerships")
-        if any(w in text_lower for w in ["regulatory", "investigation", "lawsuit", "pressure"]):
-            themes.append("Regulatory & Compliance")
-        if any(w in text_lower for w in ["volatility", "fluctuation", "market"]):
-            themes.append("Market Volatility")
-        if any(w in text_lower for w in ["cloud", "tech", "infrastructure", "ai"]):
-            themes.append("Technological Development")
+        theme_keywords = {
+            "Regulatory News": ["regulatory", "sec", "lawsuit", "investigation", "court", "compliance", "policy", "ban", "legal", "ruling"],
+            "Market Sentiment": ["sentiment", "cautious", "optimistic", "bearish", "bullish", "outlook", "confidence", "fear", "greed", "volatility", "pressure"],
+            "Institutional Adoption": ["institutional", "etf", "fund", "banks", "acquisition", "purchase", "secures", "investment", "inflow", "inflows", "outflow", "outflows"],
+            "Price Action": ["price", "rise", "fall", "rally", "drop", "surge", "slump", "gain", "loss", "highs", "lows", "higher", "lower", "soar"],
+            "Security/Hacks": ["security", "hack", "exploit", "breach", "vulnerability", "attack", "compromise", "scam", "phishing"],
+            "Partnerships": ["partnership", "strategic", "alliance", "collaborate", "ventures", "joint venture", "collaborates"]
+        }
+
+        for category, kw_list in theme_keywords.items():
+            if any(w in text_lower for w in kw_list):
+                themes.append(category)
 
         # Fallback to general themes if none matched
         if not themes:

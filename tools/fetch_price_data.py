@@ -27,12 +27,25 @@ async def fetch_price_data(ticker: str) -> dict:
 
     try:
         url = "https://www.alphavantage.co/query"
-        params = {
-            "function": "TIME_SERIES_DAILY",
-            "symbol": ticker,
-            "apikey": api_key,
-            "outputsize": "compact"
-        }
+        known_cryptos = {"BTC", "ETH", "SOL", "USDT", "USDC", "BNB", "XRP", "ADA", "DOGE", "LINK", "AVAX", "DOT", "MATIC", "SHIB", "LTC"}
+        is_crypto = ticker.upper() in known_cryptos
+        
+        if is_crypto:
+            params = {
+                "function": "DIGITAL_CURRENCY_DAILY",
+                "symbol": ticker,
+                "market": "USD",
+                "apikey": api_key
+            }
+            time_series_key = "Time Series (Digital Currency Daily)"
+        else:
+            params = {
+                "function": "TIME_SERIES_DAILY",
+                "symbol": ticker,
+                "apikey": api_key,
+                "outputsize": "compact"
+            }
+            time_series_key = "Time Series (Daily)"
         
         async with httpx.AsyncClient() as client:
             response = await client.get(url, params=params, timeout=10.0)
@@ -50,13 +63,30 @@ async def fetch_price_data(ticker: str) -> dict:
                 note_msg = data["Note"]
                 logger.warning(f"Alpha Vantage API rate limit or usage note: {note_msg}")
             
-            time_series_key = "Time Series (Daily)"
             if time_series_key in data:
                 time_series = data[time_series_key]
                 sorted_dates = sorted(time_series.keys(), reverse=True)
                 last_30_dates = sorted_dates[:30]
                 
-                filtered_series = {date: time_series[date] for date in last_30_dates}
+                filtered_series = {}
+                for date in last_30_dates:
+                    val = time_series[date]
+                    if is_crypto:
+                        filtered_series[date] = {
+                            "1. open": val.get("1a. open (USD)", val.get("1. open")),
+                            "2. high": val.get("2a. high (USD)", val.get("2. high")),
+                            "3. low": val.get("3a. low (USD)", val.get("3. low")),
+                            "4. close": val.get("4a. close (USD)", val.get("4. close")),
+                            "5. volume": val.get("5. volume", val.get("volume", "0"))
+                        }
+                    else:
+                        filtered_series[date] = {
+                            "1. open": val.get("1. open"),
+                            "2. high": val.get("2. high"),
+                            "3. low": val.get("3. low"),
+                            "4. close": val.get("4. close"),
+                            "5. volume": val.get("5. volume")
+                        }
                 
                 return {
                     "ticker": ticker,
@@ -65,7 +95,7 @@ async def fetch_price_data(ticker: str) -> dict:
                     "time_series_30_days": filtered_series
                 }
             else:
-                msg = data.get("Note") or "Time Series (Daily) not found in response"
+                msg = data.get("Note") or f"{time_series_key} not found in response"
                 logger.error(f"Alpha Vantage daily price series not found in response. Message: {msg}")
                 return _generate_simulated_prices(ticker, f"Simulated price data (Alpha Vantage response error: {msg})")
         else:

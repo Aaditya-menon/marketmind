@@ -688,15 +688,12 @@
         let currentSessionId = null;
         let currentInterruptId = null;
 
-        // Auto-detect backend port (check if running on 8080/8000, fallback to 8080)
-        let defaultUrl = 'http://127.0.0.1:8080';
-        if (window.location.port) {
-            defaultUrl = 'http://' + window.location.hostname + ':' + window.location.port;
-        }
+        // Standardize ADK API URL to port 8000
+        const defaultUrl = 'http://127.0.0.1:8000';
         document.getElementById('setting-api-url').value = defaultUrl;
 
         function getApiUrl() {
-            return document.getElementById('setting-api-url').value.trim();
+            return '';
         }
 
         analyzeBtn.addEventListener('click', startAnalysis);
@@ -730,10 +727,10 @@
             try {
                 // 1. Create a session on the ADK server
                 loadingText.textContent = `Creating connection channel on port ${API_BASE.split(':').pop()}...`;
-                const sessionRes = await fetch(`${API_BASE}/apps/marketmind/users/${userId}/sessions`, {
+                const sessionRes = await fetch(`${API_BASE}/apps/marketmind/users/${userId}/sessions/${currentSessionId}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ session_id: currentSessionId })
+                    body: JSON.stringify({})
                 });
 
                 if (!sessionRes.ok) {
@@ -743,6 +740,26 @@
                 // 2. Start the SSE flow
                 loadingText.textContent = `Fetching market indicators and news for ${ticker}...`;
                 await runAgentSse(ticker, null);
+
+                // If the stream completes and we didn't pause for verification, show results
+                if (!currentInterruptId) {
+                    loadingContainer.style.display = 'none';
+                    document.getElementById('res-ticker-symbol').textContent = ticker;
+                    
+                    const eventsList = document.getElementById('notable-events-list');
+                    eventsList.innerHTML = '';
+                    if (newsSentimentResult && newsSentimentResult.notable_events) {
+                        newsSentimentResult.notable_events.forEach(ev => {
+                            const li = document.createElement('li');
+                            li.textContent = ev;
+                            eventsList.appendChild(li);
+                        });
+                    } else {
+                        eventsList.innerHTML = '<li>No notable events parsed</li>';
+                    }
+
+                    dashboard.style.display = 'grid';
+                }
 
             } catch (err) {
                 loadingContainer.style.display = 'none';
@@ -822,48 +839,153 @@
             }
         }
 
+        function parseMarkdownReport(text) {
+            const data = {};
+            
+            // 1. Sentiment Score
+            const sentScoreMatch = text.match(/-\s*\*\*Sentiment Score\*\*:\s*([\d\.-]+)/i);
+            data.sentimentScore = sentScoreMatch ? parseFloat(sentScoreMatch[1]) : 0;
+            
+            // 2. Key Themes
+            const themesMatch = text.match(/-\s*\*\*Key Themes\*\*:\s*(.*)/i);
+            data.keyThemes = themesMatch ? themesMatch[1].split(',').map(s => s.trim()).filter(Boolean) : [];
+            
+            // 3. Notable Events
+            const eventsMatch = text.match(/-\s*\*\*Notable Events\*\*:\s*(.*)/i);
+            data.notableEvents = eventsMatch ? eventsMatch[1].split(',').map(s => s.trim()).filter(Boolean) : [];
+            
+            // 4. Trend Direction
+            const trendMatch = text.match(/-\s*\*\*Trend Direction\*\*:\s*(\w+)/i);
+            data.trendDirection = trendMatch ? trendMatch[1].trim() : 'Neutral';
+            
+            // 5. Key Levels
+            const levelsMatch = text.match(/-\s*\*\*Key Levels.*?\*\*:\s*(.*)/i);
+            data.keyLevels = levelsMatch ? levelsMatch[1].split(',').map(s => s.trim()).filter(Boolean) : [];
+            
+            // 6. Momentum Signal
+            const momentumMatch = text.match(/-\s*\*\*Momentum Signal\*\*:\s*(.*)/i);
+            data.momentumSignal = momentumMatch ? momentumMatch[1].trim() : '-';
+            
+            // 7. Trade Thesis
+            const thesisMatch = text.match(/\*\*Trade Thesis\*\*:\s*\n+([\s\S]*?)(?=\n+\-\s*\*\*|\n+##|\n*$)/i);
+            data.thesis = thesisMatch ? thesisMatch[1].trim() : '';
+            
+            // 8. Risk Rating
+            const riskMatch = text.match(/-\s*\*\*Risk Rating\*\*:\s*(\w+)/i);
+            data.riskRating = riskMatch ? riskMatch[1].trim() : 'Medium';
+            
+            // 9. Suggested Action (Final Recommendation)
+            const actionMatch = text.match(/\*\*Final Recommendation\*\*:\s*\*?\*?([^(*]+)\*?\*?\s*\(/i);
+            data.suggestedAction = actionMatch ? actionMatch[1].trim() : 'Hold';
+            
+            // 10. Confidence Score
+            const confidenceMatch = text.match(/Confidence:\s*(\d+)/i);
+            data.confidenceScore = confidenceMatch ? parseInt(confidenceMatch[1], 10) : 50;
+            
+            return data;
+        }
+
         function handleAgentEvent(event, ticker) {
             console.log('Received Event:', event);
 
-            // Parse state delta changes
-            if (event.actions && event.actions.state_delta) {
-                const delta = event.actions.state_delta;
-                if (delta.news_sentiment_result) {
-                    newsSentimentResult = delta.news_sentiment_result;
-                    updateSentimentUI();
-                }
-                if (delta.technical_analysis_result) {
-                    technicalAnalysisResult = delta.technical_analysis_result;
-                    updateTechnicalUI();
-                }
-                if (delta.risk_assessment_result) {
-                    riskAssessmentResult = delta.risk_assessment_result;
-                    updateRiskUI();
+            // Parse state delta changes (check both camelCase and snake_case)
+            const actions = event.actions;
+            if (actions) {
+                const delta = actions.stateDelta || actions.state_delta;
+                if (delta) {
+                    const sentiment = delta.newsSentimentResult || delta.news_sentiment_result;
+                    if (sentiment) {
+                        newsSentimentResult = sentiment;
+                        updateSentimentUI();
+                    }
+                    const technical = delta.technicalAnalysisResult || delta.technical_analysis_result;
+                    if (technical) {
+                        technicalAnalysisResult = technical;
+                        updateTechnicalUI();
+                    }
+                    const risk = delta.riskAssessmentResult || delta.risk_assessment_result;
+                    if (risk) {
+                        riskAssessmentResult = risk;
+                        updateRiskUI();
+                    }
                 }
             }
 
             // Track state if included directly in event.state
-            if (event.state) {
-                if (event.state.news_sentiment_result) {
-                    newsSentimentResult = event.state.news_sentiment_result;
+            const state = event.state;
+            if (state) {
+                const sentiment = state.newsSentimentResult || state.news_sentiment_result;
+                if (sentiment) {
+                    newsSentimentResult = sentiment;
                     updateSentimentUI();
                 }
-                if (event.state.technical_analysis_result) {
-                    technicalAnalysisResult = event.state.technical_analysis_result;
+                const technical = state.technicalAnalysisResult || state.technical_analysis_result;
+                if (technical) {
+                    technicalAnalysisResult = technical;
                     updateTechnicalUI();
                 }
-                if (event.state.risk_assessment_result) {
-                    riskAssessmentResult = event.state.risk_assessment_result;
+                const risk = state.riskAssessmentResult || state.risk_assessment_result;
+                if (risk) {
+                    riskAssessmentResult = risk;
                     updateRiskUI();
+                }
+            }
+
+            // Check for final markdown report and parse it directly
+            if (event.content && event.content.parts) {
+                for (const part of event.content.parts) {
+                    if (part.text && part.text.startsWith('# MarketMind Financial Analysis Report')) {
+                        const parsedData = parseMarkdownReport(part.text);
+                        newsSentimentResult = {
+                            sentiment_score: parsedData.sentimentScore,
+                            key_themes: parsedData.keyThemes,
+                            notable_events: parsedData.notableEvents
+                        };
+                        technicalAnalysisResult = {
+                            trend_direction: parsedData.trendDirection,
+                            key_levels: parsedData.keyLevels,
+                            momentum_signal: parsedData.momentumSignal
+                        };
+                        riskAssessmentResult = {
+                            thesis: parsedData.thesis,
+                            confidence_score: parsedData.confidenceScore,
+                            risk_rating: parsedData.riskRating,
+                            suggested_action: parsedData.suggestedAction
+                        };
+                        updateSentimentUI();
+                        updateTechnicalUI();
+                        updateRiskUI();
+                    }
                 }
             }
 
             // Check for HITL pause (RequestInput function call)
             if (event.content && event.content.parts) {
                 for (const part of event.content.parts) {
-                    if (part.function_call && part.function_call.name === 'adk_request_input') {
-                        currentInterruptId = part.function_call.id;
-                        showVerificationGate(part.function_call.args.message);
+                    const fCall = part.functionCall || part.function_call;
+                    if (fCall && fCall.name === 'adk_request_input') {
+                        currentInterruptId = fCall.id;
+                        
+                        // Parse intermediate sentiment/technical metrics from message payload
+                        const msgText = fCall.args.message || '';
+                        const sentMatch = msgText.match(/-\s*\*\*Raw Sentiment Score\*\*:\s*([\d\.-]+)/i);
+                        if (sentMatch) {
+                            newsSentimentResult = {
+                                sentiment_score: parseFloat(sentMatch[1]),
+                                key_themes: []
+                            };
+                        }
+                        const trendMatch = msgText.match(/-\s*\*\*Technical Chart Trend\*\*:\s*(\w+)/i);
+                        if (trendMatch) {
+                            const signalMatch = msgText.match(/-\s*\*\*Technical Chart Trend\*\*:\s*\w+\s*\(([^)]+)\)/i);
+                            technicalAnalysisResult = {
+                                trend_direction: trendMatch[1].trim(),
+                                momentum_signal: signalMatch ? signalMatch[1].trim() : '',
+                                key_levels: []
+                            };
+                        }
+                        
+                        showVerificationGate(msgText);
                     }
                 }
             }
@@ -873,7 +995,12 @@
         function updateSentimentUI() {
             if (!newsSentimentResult) return;
             
-            const score = newsSentimentResult.sentiment_score;
+            const score = (newsSentimentResult.sentiment_score !== undefined) 
+                ? newsSentimentResult.sentiment_score 
+                : newsSentimentResult.sentimentScore;
+            
+            if (score === undefined || score === null) return;
+            
             document.getElementById('sent-value-badge').textContent = score.toFixed(2);
             
             // Convert score from range [-1, 1] to percent [0, 100] for progress indicator
@@ -888,9 +1015,10 @@
             else badge.classList.add('badge-grey');
 
             // Set Themes
+            const themes = newsSentimentResult.key_themes || newsSentimentResult.keyThemes || [];
             const themesList = document.getElementById('sent-themes-list');
             themesList.innerHTML = '';
-            (newsSentimentResult.key_themes || []).forEach(theme => {
+            themes.forEach(theme => {
                 const li = document.createElement('li');
                 li.textContent = theme;
                 themesList.appendChild(li);
@@ -901,7 +1029,7 @@
         function updateTechnicalUI() {
             if (!technicalAnalysisResult) return;
 
-            const trend = technicalAnalysisResult.trend_direction;
+            const trend = technicalAnalysisResult.trend_direction || technicalAnalysisResult.trendDirection || 'Neutral';
             const trendBadge = document.getElementById('tech-trend-badge');
             trendBadge.textContent = trend;
             trendBadge.className = 'badge';
@@ -909,12 +1037,13 @@
             else if (trend === 'Bearish') trendBadge.classList.add('badge-red');
             else trendBadge.classList.add('badge-grey');
 
-            document.getElementById('tech-signal').textContent = technicalAnalysisResult.momentum_signal || '-';
+            const signal = technicalAnalysisResult.momentum_signal || technicalAnalysisResult.momentumSignal || '-';
+            document.getElementById('tech-signal').textContent = signal;
 
             // Key support/resistance levels
+            const levels = technicalAnalysisResult.key_levels || technicalAnalysisResult.keyLevels || [];
             const levelsList = document.getElementById('tech-levels-list');
             levelsList.innerHTML = '';
-            const levels = technicalAnalysisResult.key_levels || [];
             if (levels.length > 0) {
                 const liSupport = document.createElement('li');
                 liSupport.innerHTML = `Support level identified at: <strong>${levels[0]}</strong>`;
@@ -934,10 +1063,15 @@
         function updateRiskUI() {
             if (!riskAssessmentResult) return;
 
-            document.getElementById('res-thesis').textContent = riskAssessmentResult.thesis || '';
-            document.getElementById('rec-confidence').textContent = `${riskAssessmentResult.confidence_score || 0}%`;
+            const thesis = riskAssessmentResult.thesis || riskAssessmentResult.risk_thesis || riskAssessmentResult.riskThesis || '';
+            document.getElementById('res-thesis').textContent = thesis;
+            
+            const confidence = (riskAssessmentResult.confidence_score !== undefined) 
+                ? riskAssessmentResult.confidence_score 
+                : (riskAssessmentResult.confidenceScore !== undefined ? riskAssessmentResult.confidenceScore : 0);
+            document.getElementById('rec-confidence').textContent = `${confidence}%`;
 
-            const action = riskAssessmentResult.suggested_action;
+            const action = riskAssessmentResult.suggested_action || riskAssessmentResult.suggestedAction || 'Hold';
             const actionBadge = document.getElementById('rec-action-badge');
             actionBadge.textContent = action;
             actionBadge.className = 'badge';
@@ -946,7 +1080,7 @@
             else if (action === 'Avoid') actionBadge.classList.add('badge-red');
             else actionBadge.classList.add('badge-grey');
 
-            const risk = riskAssessmentResult.risk_rating;
+            const risk = riskAssessmentResult.risk_rating || riskAssessmentResult.riskRating || 'Medium';
             const riskBadge = document.getElementById('rec-risk-badge');
             riskBadge.textContent = risk;
             riskBadge.className = 'badge';
