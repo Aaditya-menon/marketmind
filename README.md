@@ -109,17 +109,17 @@ To perform a direct analysis query in your terminal:
 uvx google-agents-cli run "Analyze AAPL"
 ```
 
-### Launch Web Playground
-To run the default ADK developer UI playground:
+### Launch Unified Web Server
+To start the unified server serving both the backend API and the static frontend dashboard:
 ```bash
-uvx google-agents-cli playground
+uv run python serve.py
 ```
-This runs the web server locally at [http://127.0.0.1:8080](http://127.0.0.1:8080).
 
-### Run Dashboard Frontend
-1. Launch the playground backend server as described above.
-2. Open the file [frontend/index.html](file:///c:/Users/adity/Documents/antigravity/marketmind/frontend/index.html) in your browser.
-3. Enter a ticker symbol (e.g. `AAPL`), configure port overrides in settings if necessary, and click **Analyze**.
+### Accessing the Interfaces
+1. **Custom Dashboard**: Open [http://127.0.0.1:8000/static/index.html](http://127.0.0.1:8000/static/index.html) in your browser. Enter a ticker symbol (e.g., `AAPL`) and click **Analyze**.
+2. **ADK Developer UI**: Open [http://127.0.0.1:8000/dev-ui/?app=marketmind](http://127.0.0.1:8000/dev-ui/?app=marketmind) in your browser.
+
+*Note: Since the frontend and backend are hosted on the same port (8000), no separate servers or CORS configurations are needed.*
 
 ---
 
