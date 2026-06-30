@@ -135,7 +135,7 @@ Antigravity includes built-in commands to speed up your developer lifecycle. Rec
 
 ### UI Dashboard Overview
 ![Dashboard UI](screenshots/marketmind-demo.png)
-*Figure 1: MarketMind single-page dashboard displaying real-time keyword sentiment, calculated SMA trends, and confirmation modal. See screenshots/marketmind-demo.png for a sample report output.*
+*Live demo of the MarketMind dashboard showing a completed BTC analysis.*
 
 ---
 
